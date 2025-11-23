@@ -1,0 +1,9 @@
+[requires]
+fmt/[*]
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout
