@@ -8,6 +8,11 @@ alias b := build
 alias r := run
 alias t := test
 alias d := debug
+alias dt := debug-test
+alias br := build-release
+alias rr := run-release
+alias bd := build-docker
+alias rd := run-docker
 
 default: build
 
@@ -55,6 +60,9 @@ tidy:
 
 debug: build
     lldb {{debug_dir}}/{{target_name}}
+
+debug-test: build
+    lldb {{debug_dir}}/{{test_target_name}}
 
 build-docker:
     docker buildx build -t {{target_name}} .

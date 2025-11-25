@@ -18,6 +18,11 @@ endif()
 target_compile_options(${TARGET_NAME} PRIVATE
         $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
 )
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(${TARGET_NAME} PRIVATE -fmax-errors=1)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(${TARGET_NAME} PRIVATE -ferror-limit=1)
+endif()
 target_include_directories(${TARGET_NAME} PRIVATE
         ${CMAKE_SOURCE_DIR}/include)
 
@@ -31,6 +36,11 @@ add_executable(${TEST_TARGET_NAME} test/test.cpp)
 target_compile_options(${TEST_TARGET_NAME}  PRIVATE
         $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
 )
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(${TEST_TARGET_NAME} PRIVATE -fmax-errors=1)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(${TEST_TARGET_NAME} PRIVATE -ferror-limit=1)
+endif()
 
 target_include_directories(${TEST_TARGET_NAME} PRIVATE
         ${CMAKE_SOURCE_DIR}/include)

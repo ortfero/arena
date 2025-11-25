@@ -1,5 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
+#include <doctest/doctest.h>
 
-#include "arena.test.hpp"
+#define ARENA_ENABLE_TEST
+#include <arena/vector.hpp>
 
