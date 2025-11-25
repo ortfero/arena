@@ -3,4 +3,3 @@
 
 #define ARENA_ENABLE_TEST
 #include <arena/vector.hpp>
-
