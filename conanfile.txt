@@ -1,4 +1,5 @@
 [requires]
+doctest/[*]
 fmt/[*]
 
 [generators]
