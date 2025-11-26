@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 4.0)
 project(arena VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -7,49 +7,33 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(TARGET_NAME ${PROJECT_NAME})
 set(TEST_TARGET_NAME ${PROJECT_NAME}_test)
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-add_executable(${TARGET_NAME} src/main.cpp)
+set(HEADERS
+  "include/doctest/doctest.h"
+  "include/arena/vector.hpp")
 
-file(GLOB_RECURSE PROJECT_HEADERS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/include/*.hpp")
-if(PROJECT_HEADERS)
-    target_sources(${TARGET_NAME} PRIVATE ${PROJECT_HEADERS})
-endif()
+set(GCC_OPTIONS -Wall -Wextra -Wpedantic -fmax-errors=1)
+set(CLANG_OPTIONS -Wall -Wextra -Wpedantic -ferror-limit=1)
 
-target_compile_options(${TARGET_NAME} PRIVATE
-        $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
-)
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(${TARGET_NAME} PRIVATE -fmax-errors=1)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_options(${TARGET_NAME} PRIVATE -ferror-limit=1)
-endif()
-target_include_directories(${TARGET_NAME} PRIVATE
-        ${CMAKE_SOURCE_DIR}/include)
+set(COMPILE_OPTIONS
+  $<$<CXX_COMPILER_ID:GNU>:${GCC_OPTIONS}>
+  $<$<CXX_COMPILER_ID:Clang>:${CLANG_OPTIONS}>)
 
 find_package(fmt CONFIG REQUIRED)
+
+add_executable(${TARGET_NAME} src/main.cpp)
+target_sources(${TARGET_NAME} PRIVATE ${HEADERS})
+target_include_directories(${TARGET_NAME} PRIVATE ${INCLUDE_DIR})
+target_compile_options(${TARGET_NAME} PRIVATE ${COMPILE_OPTIONS})
 target_link_libraries(${TARGET_NAME} PRIVATE fmt::fmt)
 
 include(CTest)
 enable_testing()
 
 add_executable(${TEST_TARGET_NAME} test/test.cpp)
-target_compile_options(${TEST_TARGET_NAME}  PRIVATE
-        $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
-)
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(${TEST_TARGET_NAME} PRIVATE -fmax-errors=1)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_options(${TEST_TARGET_NAME} PRIVATE -ferror-limit=1)
-endif()
-
-target_include_directories(${TEST_TARGET_NAME} PRIVATE
-        ${CMAKE_SOURCE_DIR}/include)
-
-file(GLOB_RECURSE TEST_HEADERS CONFIGURE_DEPENDS
-        "${CMAKE_SOURCE_DIR}/test/*.hpp")
-
-if(TEST_HEADERS)
-    target_sources(${TEST_TARGET_NAME} PRIVATE ${TEST_HEADERS})
-endif()
-
+target_sources(${TEST_TARGET_NAME} PRIVATE ${HEADERS})
+target_include_directories(${TEST_TARGET_NAME} PRIVATE ${INCLUDE_DIR})
+target_compile_options(${TEST_TARGET_NAME} PRIVATE ${COMPILE_OPTIONS})
+target_link_libraries(${TARGET_NAME} PRIVATE fmt::fmt)
 add_test(NAME ${TEST_TARGET_NAME} COMMAND ${TEST_TARGET_NAME})

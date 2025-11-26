@@ -51,7 +51,7 @@ template <typename T, typename A> struct vector_buffer {
             for(; n != other.size; ++n)
                 traits::construct(allr, data + n, *(other.data + n));
         } catch(...) {
-            for(size_t i = 0; i != n; ++i)
+            for(size_t i = 0; i < n; ++i)
                 traits::destroy(allr, data + i);
             cleanup();
             clear();
@@ -77,7 +77,7 @@ template <typename T, typename A> struct vector_buffer {
             std::copy_n(other.data, size, data);
             size_t n = size;
             try {
-                for(; n != other.size; ++n)
+                for(; n < other.size; ++n)
                     traits::construct(allr, data + n, *(other.data + n));
             } catch(...) {
                 size = n;
@@ -109,9 +109,8 @@ template <typename T, typename A> struct vector_buffer {
         try {
             for(; n != size; ++n)
                 traits::construct(allr, new_data + n, std::move_if_noexcept(*(data + n)));
-            ;
         } catch(...) {
-            for(size_t i = 0u; i != n; ++i)
+            for(size_t i = 0u; i < n; ++i)
                 traits::destroy(allr, new_data + i);
             traits::deallocate(allr, new_data, new_capacity);
             throw;
