@@ -1,5 +1,6 @@
 target_name := "arena"
 test_target_name := target_name + "_test"
+bench_target_name := target_name + "_bench"
 build_dir := "build"
 debug_dir := build_dir + "/Debug"
 release_dir := build_dir + "/RelWithDebInfo"
@@ -7,6 +8,7 @@ release_dir := build_dir + "/RelWithDebInfo"
 alias b := build
 alias r := run
 alias t := test
+alias bm := benchmark
 alias d := debug
 alias dt := debug-test
 alias br := build-release
@@ -44,6 +46,9 @@ run-release: build-release
 
 test: build
     ctest --test-dir {{debug_dir}} --output-on-failure
+
+benchmark: build-release
+    {{release_dir}}/{{bench_target_name}}
 
 tidy:
     echo "formatting..."
